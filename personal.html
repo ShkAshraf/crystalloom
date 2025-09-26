@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Information - Crystal Loom</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-green-50">
+
+  <!-- Back Button -->
+  <div class="fixed top-20 left-4 z-40 md:top-24 md:left-6">
+    <button onclick="history.back()" class="flex items-center text-green-800 hover:text-green-600 font-bold bg-white p-2 rounded-lg shadow-md transition duration-150">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      <span class="hidden sm:inline">Go Back</span>
+    </button>
+  </div>
+
+  <nav class="bg-green-800 text-white px-6 py-4 flex items-center justify-between shadow-lg sticky top-0 z-50">
+    <div class="flex items-center gap-2">
+      <img src="Untitled design.png" alt="Crystal Loom Logo" class="h-10 w-10 rounded-full">
+      <span class="text-xl font-bold">Crystal Loom</span>
+    </div>
+    <ul class="flex space-x-6">
+      <li><a href="index.html" class="hover:text-green-300">Home</a></li>
+      <li><a href="about.html" class="hover:text-green-300">About</a></li>
+      <li><a href="contact.html" class="hover:text-green-300">Contact</a></li>
+      <li><a href="shop.html" class="hover:text-green-300">Shop</a></li>
+    </ul>
+    <div class="flex items-center gap-4">
+      <div id="auth-section">
+        <!-- Dynamic auth content -->
+      </div>
+      <a href="cart.html" class="relative">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hover:text-green-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-2">0</span>
+      </a>
+    </div>
+  </nav>
+
+  <section class="py-16 px-6 max-w-md mx-auto">
+    <h1 class="text-3xl font-bold mb-8 text-center text-green-900">Personal Information</h1>
+    <div class="bg-white p-8 rounded-2xl shadow-xl">
+      <form onsubmit="savePersonalInfo(event)">
+        <input type="text" id="name" placeholder="Full Name" required class="w-full mb-4 p-3 border rounded-lg focus:ring-2 focus:ring-green-500" value="">
+        <input type="tel" id="phone" placeholder="Phone Number" required class="w-full mb-4 p-3 border rounded-lg focus:ring-2 focus:ring-green-500" value="">
+        <input type="text" id="address" placeholder="Address" required class="w-full mb-4 p-3 border rounded-lg focus:ring-2 focus:ring-green-500" value="">
+        <input type="text" id="building" placeholder="Building or Apartment" required class="w-full mb-4 p-3 border rounded-lg focus:ring-2 focus:ring-green-500" value="">
+        <input type="text" id="room" placeholder="Room Number or Flat Number" required class="w-full mb-4 p-3 border rounded-lg focus:ring-2 focus:ring-green-500" value="">
+        <input type="text" id="city" placeholder="City" required class="w-full mb-4 p-3 border rounded-lg focus:ring-2 focus:ring-green-500" value="">
+        <input type="text" id="state" placeholder="State" required class="w-full mb-4 p-3 border rounded-lg focus:ring-2 focus:ring-green-500" value="">
+        <input type="text" id="pincode" placeholder="Pincode" required class="w-full mb-4 p-3 border rounded-lg focus:ring-2 focus:ring-green-500" value="" pattern="\d{6}" title="Pincode must be 6 digits">
+        <button type="submit" id="submit-btn" class="w-full bg-green-700 text-white py-3 rounded-lg hover:bg-green-600 font-semibold">Save & Continue</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="bg-green-800 text-white text-center py-8 mt-16">
+    <p>&copy; 2025 Crystal Loom. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    const isFromSettings = window.location.search.includes('from=settings');
+
+    function isLoggedIn() {
+      return localStorage.getItem('isLoggedIn') === 'true';
+    }
+
+    function getLoggedInUser() {
+      return JSON.parse(localStorage.getItem('loggedInUser')) || {};
+    }
+
+    function updateAuthSection() {
+      const authSection = document.getElementById('auth-section');
+      if (isLoggedIn()) {
+        const user = getLoggedInUser();
+        authSection.innerHTML = `
+          <div class="relative">
+            <button id="profile-btn" class="flex items-center gap-2 text-white hover:text-green-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 rounded-full bg-white text-green-800 p-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span>${user.name}</span>
+            </button>
+            <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 text-green-900">
+              <a href="personal.html?from=settings" class="block px-4 py-2 text-sm hover:bg-green-100">Account Settings</a>
+              <button onclick="logout()" class="block w-full text-left px-4 py-2 text-sm hover:bg-green-100">Logout</button>
+            </div>
+          </div>
+        `;
+        // Add event listener for dropdown
+        document.getElementById('profile-btn').addEventListener('click', function(e) {
+          e.stopPropagation();
+          document.getElementById('profile-dropdown').classList.toggle('hidden');
+        });
+        // Hide dropdown on outside click
+        document.addEventListener('click', function() {
+          document.getElementById('profile-dropdown').classList.add('hidden');
+        });
+      } else {
+        authSection.innerHTML = `
+          <a href="login.html" class="bg-white text-green-800 px-4 py-2 rounded-lg hover:bg-green-100">Login</a>
+        `;
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('loggedInUser');
+      updateAuthSection();
+      alert('You have been logged out.');
+    }
+
+    function loadCartCount() {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const totalItems = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
+      document.getElementById('cart-count').textContent = totalItems;
+    }
+
+    function savePersonalInfo(event) {
+      event.preventDefault();
+      if (!isLoggedIn()) {
+        alert('Please log in first.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const user = getLoggedInUser();
+      const personalInfo = {
+        name: document.getElementById('name').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        address: document.getElementById('address').value.trim(),
+        building: document.getElementById('building').value.trim(),
+        room: document.getElementById('room').value.trim(),
+        city: document.getElementById('city').value.trim(),
+        state: document.getElementById('state').value.trim(),
+        pincode: document.getElementById('pincode').value.trim()
+      };
+
+      // Update localStorage directly
+      user.personalInfo = personalInfo;
+      localStorage.setItem('loggedInUser', JSON.stringify(user));
+
+      alert('Personal information saved successfully!');
+      window.location.href = isFromSettings ? 'index.html' : 'checkout.html';
+    }
+
+    // Prefill form if personal info exists
+    function prefillForm() {
+      const user = getLoggedInUser();
+      if (user.personalInfo) {
+        document.getElementById('name').value = user.personalInfo.name || '';
+        document.getElementById('phone').value = user.personalInfo.phone || '';
+        document.getElementById('address').value = user.personalInfo.address || '';
+        document.getElementById('building').value = user.personalInfo.building || '';
+        document.getElementById('room').value = user.personalInfo.room || '';
+        document.getElementById('city').value = user.personalInfo.city || '';
+        document.getElementById('state').value = user.personalInfo.state || '';
+        document.getElementById('pincode').value = user.personalInfo.pincode || '';
+      }
+    }
+
+    window.onload = function() {
+      if (!isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+      }
+      updateAuthSection();
+      loadCartCount();
+      prefillForm();
+      document.getElementById('submit-btn').textContent = isFromSettings ? 'Save & Continue' : 'Save & Continue to Checkout';
+    };
+
+    window.addEventListener('storage', function() {
+      updateAuthSection();
+      loadCartCount();
+    });
+  </script>
+</body>
+</html>

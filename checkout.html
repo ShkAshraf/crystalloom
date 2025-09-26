@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Crystal Loom</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-white text-green-900 font-sans">
+
+    <nav class="bg-green-800 text-white px-6 py-4 flex items-center justify-between shadow-lg sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <img src="Untitled design.png" alt="Crystal Loom Logo" class="h-10 w-10 rounded-full">
+            <span class="text-xl font-bold">Crystal Loom</span>
+        </div>
+        <ul class="flex space-x-6">
+            <li><a href="index.html" class="hover:text-green-300">Home</a></li>
+            <li><a href="about.html" class="hover:text-green-300">About</a></li>
+            <li><a href="contact.html" class="hover:text-green-300">Contact</a></li>
+            <li><a href="shop.html" class="hover:text-green-300">Shop</a></li>
+        </ul>
+        <div class="flex items-center gap-4">
+            <div id="auth-section">
+                <!-- Dynamic auth content -->
+            </div>
+            <a href="cart.html" class="relative">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hover:text-green-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-2">0</span>
+            </a>
+        </div>
+    </nav>
+    
+    <section class="py-16 px-6 max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold mb-10 text-center">Select Payment Method</h1>
+
+        <div class="bg-gray-100 p-6 rounded-lg mb-8 shadow-inner">
+            <h2 class="text-xl font-semibold mb-2">Order Summary</h2>
+            <div id="checkout-items" class="space-y-4 mb-4"></div>
+            <p class="text-2xl font-bold text-green-700">Total Payable: ₹<span id="checkout-total">0</span></p>
+        </div>
+
+        <div class="bg-gray-100 p-6 rounded-lg mb-8 shadow-inner">
+            <h2 class="text-xl font-semibold mb-4">Shipping Information</h2>
+            <div id="shipping-info" class="text-sm">
+                <!-- Personal info will be displayed here -->
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            
+            <button onclick="simulateRazorpayPayment()" class="w-full flex items-center justify-center p-5 border border-green-600 rounded-lg shadow-md bg-green-50 hover:bg-green-100 transition-colors">
+                <div class="text-center">
+                    <p class="text-xl font-bold text-green-800">💳 Pay Online with Razorpay</p>
+                    <p class="text-sm text-gray-600 mt-1">Debit Card, Credit Card, UPI, Netbanking</p>
+                </div>
+            </button>
+
+            <div class="w-full flex items-center justify-between p-5 border border-red-300 rounded-lg bg-red-50 opacity-50 cursor-not-allowed">
+                <div class="text-center w-full">
+                    <p class="text-xl font-bold text-gray-600">📦 Cash on Delivery (COD)</p>
+                    <p class="text-sm text-red-600 mt-1">Currently unavailable for this order.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-10 text-center">
+            <a href="cart.html" class="text-green-700 hover:text-green-900 font-semibold underline">← Back to Cart</a>
+        </div>
+    </section>
+
+    <footer class="bg-green-800 text-white text-center py-8 mt-16">
+        <p>&copy; 2025 Crystal Loom. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+    function isLoggedIn() {
+      return localStorage.getItem('isLoggedIn') === 'true';
+    }
+
+    function getLoggedInUser() {
+      return JSON.parse(localStorage.getItem('loggedInUser')) || {};
+    }
+
+    function updateAuthSection() {
+      const authSection = document.getElementById('auth-section');
+      if (isLoggedIn()) {
+        const user = getLoggedInUser();
+        authSection.innerHTML = `
+          <div class="relative">
+            <button id="profile-btn" class="flex items-center gap-2 text-white hover:text-green-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 rounded-full bg-white text-green-800 p-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span>${user.name}</span>
+            </button>
+            <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 text-green-900">
+              <a href="personal.html?from=settings" class="block px-4 py-2 text-sm hover:bg-green-100">Account Settings</a>
+              <button onclick="logout()" class="block w-full text-left px-4 py-2 text-sm hover:bg-green-100">Logout</button>
+            </div>
+          </div>
+        `;
+        // Add event listener for dropdown
+        document.getElementById('profile-btn').addEventListener('click', function(e) {
+          e.stopPropagation();
+          document.getElementById('profile-dropdown').classList.toggle('hidden');
+        });
+        // Hide dropdown on outside click
+        document.addEventListener('click', function() {
+          document.getElementById('profile-dropdown').classList.add('hidden');
+        });
+      } else {
+        authSection.innerHTML = `
+          <a href="login.html" class="bg-white text-green-800 px-4 py-2 rounded-lg hover:bg-green-100">Login</a>
+        `;
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('loggedInUser');
+      updateAuthSection();
+      alert('You have been logged out.');
+    }
+
+    function loadCartCount() {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const totalItems = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
+      document.getElementById('cart-count').textContent = totalItems;
+    }
+
+    function loadCheckout() {
+        if (!isLoggedIn()) {
+            alert('Please log in to proceed with checkout.');
+            window.location.href = 'login.html';
+            return;
+        }
+
+        const user = getLoggedInUser();
+        if (!user.personalInfo) {
+            alert('Please provide your personal information first.');
+            window.location.href = 'personal.html';
+            return;
+        }
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let total = 0;
+
+        const itemsContainer = document.getElementById('checkout-items');
+        itemsContainer.innerHTML = '';
+
+        if (cart.length === 0) {
+            itemsContainer.innerHTML = '<p class="text-center text-gray-600">Your cart is empty.</p>';
+            document.getElementById('checkout-total').textContent = '0';
+            return;
+        }
+
+        cart.forEach(item => {
+            const itemPrice = parseFloat(item.price);
+            const originalPrice = parseFloat(item.originalPrice || itemPrice * 1.6667);
+            const save = originalPrice - itemPrice;
+            const itemQty = parseInt(item.qty);
+            const subtotal = itemPrice * itemQty;
+
+            total += subtotal;
+
+            itemsContainer.innerHTML += `
+                <div class="flex justify-between items-center border-b py-2">
+                    <div class="flex items-center gap-4">
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded">
+                        <div>
+                            <h3 class="font-semibold">${item.name}</h3>
+                            <p class="mt-1">
+                                <span class="line-through text-gray-500">₹${originalPrice.toFixed(0)}</span><br>
+                                <span class="text-green-700 font-bold">₹${itemPrice.toFixed(0)}</span><br>
+                                <span class="text-red-600 text-sm">Save ₹${save.toFixed(0)} (40% off)</span>
+                            </p>
+                            <p class="text-sm text-gray-600">Qty: ${itemQty}</p>
+                        </div>
+                    </div>
+                    <p class="font-bold">₹${subtotal.toFixed(0)}</p>
+                </div>
+            `;
+        });
+
+        // Update the total display
+        document.getElementById('checkout-total').textContent = total.toFixed(0);
+        // Update the cart count in the navbar
+        loadCartCount();
+
+        // Display shipping info
+        const info = user.personalInfo;
+        document.getElementById('shipping-info').innerHTML = `
+            <p><strong>Name:</strong> ${info.name}</p>
+            <p><strong>Phone:</strong> ${info.phone}</p>
+            <p><strong>Address:</strong> ${info.address}, ${info.city}, ${info.state} - ${info.pincode}</p>
+        `;
+
+        // Prevent checkout if empty
+        if (cart.length === 0) {
+            alert("Your cart is empty. Redirecting to Shop.");
+            window.location.href = 'shop.html';
+        }
+
+        updateAuthSection();
+    }
+
+    function simulateRazorpayPayment() {
+        let total = parseFloat(document.getElementById('checkout-total').textContent);
+        const user = getLoggedInUser();
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Simulate payment
+        alert(`Initiating Razorpay payment for total amount: ₹${total}. (This is a simulation)`);
+
+        // Assume payment success
+        const shippingInfo = user.personalInfo;
+
+        // Generate order ID
+        const orderId = 'ORD-' + Date.now();
+
+        // Store order in localStorage
+        const order = {
+            orderId: orderId,
+            user: user,
+            cart: cart,
+            total: total,
+            shippingInfo: shippingInfo,
+            date: new Date().toISOString(),
+            status: "Confirmed"
+        };
+
+        let orders = JSON.parse(localStorage.getItem('orders')) || [];
+        orders.push(order);
+        localStorage.setItem('orders', JSON.stringify(orders));
+
+        alert('Order placed successfully! Order ID: ' + orderId);
+
+        // Clear cart
+        localStorage.removeItem('cart');
+
+        // Redirect to order summary
+        window.location.href = 'order-summary.html?orderId=' + orderId;
+    }
+
+    window.onload = loadCheckout;
+    window.addEventListener("storage", loadCheckout);
+</script>
+</body>
+</html>

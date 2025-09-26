@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="product-title">Product Details - Crystal Loom</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-white text-green-900 font-sans">
+
+  <nav class="bg-green-800 text-white px-6 py-4 flex items-center justify-between shadow-lg sticky top-0 z-50">
+    <div class="flex items-center gap-2">
+      <img src="Untitled design.png" alt="Crystal Loom Logo" class="h-10 w-10 rounded-full">
+      <span class="text-xl font-bold">Crystal Loom</span>
+    </div>
+    <ul class="flex space-x-6">
+      <li><a href="index.html" class="hover:text-green-300">Home</a></li>
+      <li><a href="about.html" class="hover:text-green-300">About</a></li>
+      <li><a href="contact.html" class="hover:text-green-300">Contact</a></li>
+      <li><a href="shop.html" class="hover:text-green-300">Shop</a></li>
+    </ul>
+    <div class="flex items-center gap-4">
+      <div id="auth-section">
+        <!-- Dynamic auth content -->
+      </div>
+      <a href="cart.html" class="relative">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hover:text-green-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-2">0</span>
+      </a>
+    </div>
+  </nav>
+<div class="fixed top-20 left-4 z-40 md:top-24 md:left-6">
+  <button onclick="history.back()" class="flex items-center text-green-800 hover:text-green-600 font-bold bg-white p-2 rounded-lg shadow-md transition duration-150">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+    </svg>
+    <span class="hidden sm:inline">Go Back</span>
+  </button>
+</div>
+  <section class="py-16 px-10 flex flex-col md:flex-row gap-10 items-start max-w-6xl mx-auto">
+    
+    <div class="flex-1">
+      <div class="relative mb-4">
+        <img id="main-product-image" src="" alt="Product Image" class="w-full rounded-lg shadow-lg">
+        <button id="prev-btn" title="Previous Image" class="absolute top-1/2 left-2 -translate-y-1/2 bg-white bg-opacity-70 p-2 rounded-full shadow hover:bg-opacity-100 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button id="next-btn" title="Next Image" class="absolute top-1/2 right-2 -translate-y-1/2 bg-white bg-opacity-70 p-2 rounded-full shadow hover:bg-opacity-100 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+      <div id="image-gallery" class="flex gap-4 overflow-x-auto">
+        </div>
+    </div>
+    
+    <div class="flex-1">
+      <h1 id="product-name" class="text-4xl font-bold mb-4"></h1>
+      <p id="product-description" class="text-lg mb-6 leading-relaxed"></p>
+      <p id="product-price" class="text-green-700 font-bold text-3xl mb-6"></p>
+      
+      <div class="flex items-center gap-4 mb-6">
+        <label for="quantity" class="text-lg font-semibold">Quantity:</label>
+        <input type="number" id="quantity" value="1" min="1" class="w-20 p-2 border rounded-lg text-center">
+      </div>
+      
+      <button id="add-to-cart-btn" class="bg-green-700 text-white px-8 py-4 rounded-lg font-semibold hover:bg-green-600 transition-colors">Add to Cart</button>
+    </div>
+  </section>
+  
+  <footer class="bg-green-800 text-white text-center py-8 mt-16">
+    <p>&copy; 2025 Crystal Loom. All Rights Reserved.</p>
+  </footer>
+  
+  <div id="notification" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-transform duration-300 ease-out hidden">
+    <span id="notification-message"></span>
+  </div>
+
+  <script>
+    const products = {
+      '1': {
+        name: 'Crystal Bracelet',
+        price: 3999,
+        description: 'A handcrafted bracelet made with natural crystals to bring balance and elegance. Perfect for daily wear or special occasions.',
+        images: ['images/9f2cf479e4a8401_file_00000000c3fc61faa1720cd6827fddd2_wm (1).jpg',]
+      },
+      '2': {
+        name: 'Gemstone Necklace',
+        price: 6499,
+        description: 'An exquisite necklace featuring a unique gemstone pendant, symbolizing strength and inner peace. Each piece is one-of-a-kind.',
+        images: ['images/1757923709133.jpg']
+      },
+      '3': {
+        name: 'Elegant Ring',
+        price: 4999,
+        description: 'This elegant ring is designed with a minimalist touch, showcasing a single, brilliant crystal. It is the perfect accessory to complement any outfit.',
+        images: ['images/1757956065069.jpg']
+      },
+      '4': {
+        name: 'Crystal Earrings',
+        price: 2999,
+        description: 'Dazzling crystal earrings that catch the light beautifully. Lightweight and comfortable for all-day wear, adding a touch of sparkle to your look.',
+        images: ['images/1758130493591.jpg']
+      },
+      '5': {
+        name: 'Healing Pendant',
+        price: 3499,
+        description: 'A pendant featuring a special healing crystal, believed to promote wellness and positive energy. A meaningful piece of jewelry for yourself or a loved one.',
+        images: ['images/1758652688467.jpg']
+      },
+      '6': {
+        name: 'Crystal Choker',
+        price: 5999,
+        description: 'A stylish crystal choker that sits perfectly around the neck, made with high-quality, shimmering crystals for a sophisticated look.',
+        images: ['images/1758654327334.jpg']
+      },
+      '7': {
+        name: 'Royal Emerald Ring',
+        price: 7999,
+        description: 'A majestic ring featuring a vibrant emerald gemstone, symbolizing prosperity and elegance. Perfect for making a bold statement.',
+        images: ['images/image 2.jpg']
+      },
+      '8': {
+        name: 'Diamond Stud Earrings',
+        price: 9999,
+        description: 'Elegant diamond stud earrings that add a touch of luxury to any outfit. Crafted with precision for everyday sophistication.',
+        images: ['images/image 3 .jpg']
+      },
+      '9': {
+        name: 'Pearl Necklace',
+        price: 6999,
+        description: 'A classic pearl necklace that exudes timeless beauty and grace. Ideal for special occasions or as an heirloom piece.',
+        images: ['images/image 4 .jpg']
+      }
+    };
+
+    let currentImageIndex = 0;
+    let productImages = [];
+
+    function loadProduct() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+      const product = products[productId];
+
+      if (!product) {
+        document.body.innerHTML = '<p class="text-center text-red-600 mt-20 text-xl font-bold">Product not found!</p>';
+        return;
+      }
+
+      productImages = product.images;
+      document.getElementById('product-title').textContent = product.name + ' - Crystal Loom';
+      document.getElementById('product-name').textContent = product.name;
+      document.getElementById('product-description').textContent = product.description;
+
+      const originalPrice = product.price;
+      const discountedPrice = Math.round(originalPrice * 0.6);
+      const saveAmount = originalPrice - discountedPrice;
+      document.getElementById('product-price').innerHTML = `
+        <span class="line-through text-gray-500">₹${originalPrice}</span><br>
+        <span class="text-green-700 font-bold text-3xl">₹${discountedPrice}</span><br>
+        <span class="text-red-600 text-sm">Save ₹${saveAmount} (40% off)</span>
+      `;
+
+      // Load initial main image
+      updateMainImage();
+
+      // Build image gallery
+      const gallery = document.getElementById('image-gallery');
+      gallery.innerHTML = '';
+      product.images.forEach((imageSrc, index) => {
+        const img = document.createElement('img');
+        img.src = imageSrc;
+        img.alt = `${product.name} Image ${index + 1}`;
+        img.className = 'w-24 h-24 object-cover rounded-md cursor-pointer border-2 border-transparent hover:border-green-500 transition-colors';
+        img.onclick = () => {
+          currentImageIndex = index;
+          updateMainImage();
+        };
+        gallery.appendChild(img);
+      });
+
+      document.getElementById('add-to-cart-btn').onclick = () => {
+        const quantity = parseInt(document.getElementById('quantity').value);
+        if (quantity > 0) {
+          addToCart({ ...product, price: discountedPrice }, quantity);
+        } else {
+          showNotification("Please enter a valid quantity.", true);
+        }
+      };
+    }
+
+    function updateMainImage() {
+      document.getElementById('main-product-image').src = productImages[currentImageIndex];
+    }
+
+    document.getElementById('next-btn').onclick = () => {
+      currentImageIndex = (currentImageIndex + 1) % productImages.length;
+      updateMainImage();
+    };
+
+    document.getElementById('prev-btn').onclick = () => {
+      currentImageIndex = (currentImageIndex - 1 + productImages.length) % productImages.length;
+      updateMainImage();
+    };
+
+    function addToCart(product, qty) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      let item = cart.find(i => i.name === product.name);
+      if (item) {
+        item.qty += qty;
+      } else {
+        cart.push({ name: product.name, price: product.price, image: product.images[0], qty: qty });
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      showNotification(`${qty} ${product.name}(s) added to cart!`);
+      loadCartCount();
+    }
+
+    function showNotification(message, isError = false) {
+      const notification = document.getElementById('notification');
+      const notificationMessage = document.getElementById('notification-message');
+
+      notificationMessage.textContent = message;
+      notification.classList.remove('hidden', 'bg-green-700');
+      notification.classList.add(isError ? 'bg-red-500' : 'bg-green-700');
+
+      setTimeout(() => {
+        notification.classList.add('hidden');
+      }, 3000);
+    }
+
+    function loadCartCount() {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cart-count').textContent = totalItems;
+    }
+
+    function isLoggedIn() {
+      return localStorage.getItem('isLoggedIn') === 'true';
+    }
+
+    function getLoggedInUser() {
+      return JSON.parse(localStorage.getItem('loggedInUser')) || {};
+    }
+
+    function updateAuthSection() {
+      const authSection = document.getElementById('auth-section');
+      if (isLoggedIn()) {
+        const user = getLoggedInUser();
+        authSection.innerHTML = `
+          <div class="relative">
+            <button id="profile-btn" class="flex items-center gap-2 text-white hover:text-green-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 rounded-full bg-white text-green-800 p-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span>${user.name}</span>
+            </button>
+            <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 text-green-900">
+              <a href="personal.html?from=settings" class="block px-4 py-2 text-sm hover:bg-green-100">Account Settings</a>
+              <button onclick="logout()" class="block w-full text-left px-4 py-2 text-sm hover:bg-green-100">Logout</button>
+            </div>
+          </div>
+        `;
+        // Add event listener for dropdown
+        document.getElementById('profile-btn').addEventListener('click', function(e) {
+          e.stopPropagation();
+          document.getElementById('profile-dropdown').classList.toggle('hidden');
+        });
+        // Hide dropdown on outside click
+        document.addEventListener('click', function() {
+          document.getElementById('profile-dropdown').classList.add('hidden');
+        });
+      } else {
+        authSection.innerHTML = `
+          <a href="login.html" class="bg-white text-green-800 px-4 py-2 rounded-lg hover:bg-green-100">Login</a>
+        `;
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('loggedInUser');
+      updateAuthSection();
+      alert('You have been logged out.');
+    }
+
+    window.onload = () => {
+      loadProduct();
+      loadCartCount();
+      updateAuthSection();
+    };
+    window.addEventListener("storage", function() {
+      loadCartCount();
+      updateAuthSection();
+    });
+  </script>
+
+</body>
+</html>
